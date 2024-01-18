@@ -2,8 +2,18 @@
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react';
+import date from 'date-and-time';
+import { toWords } from 'number-to-words';
 
 
+function formatTimeAsWords() {
+  const now = new Date();
+  const hours = toWords(now.getHours());
+  const minutes = toWords(now.getMinutes());
+  const seconds = toWords(now.getSeconds());
+
+  return `${hours} past ${minutes} minutes ${seconds} seconds`;
+}
 function polindrome(str) {
   const reversedStr = str.split('').reverse().join('');
   return str === reversedStr;
@@ -57,24 +67,14 @@ export default function Home() {
     return `${hours}:${minutes}:${seconds} ${ampm}`;
   };
 
-  const formatString = (date) => {
-    let jam = date.getHours();
-    let menit = date.getMinutes();
-    let detik = date.getSeconds();
-    let ampm = jam >= 12 ? 'PM' : 'AM';
 
-    jam = jam % 12;
-    jam = jam ? jam : 12;
-    menit = menit < 10 ? '0' + menit : menit;
-
-    return `${jam}:${menit}:${detik} ${ampm}`;
-  };
 
   return (
     <div>
       <h1>Next.js + rust</h1>
       <h2>{formatTime(time)}</h2>
-      <h2>{formatString(time)}</h2>
+      <h2>{formatTimeAsWords()}</h2>
+
       <form method='post'>
         <input type='file' name='convert' onChange={handleFileUpload}></input>
         <p>{hash}</p>
