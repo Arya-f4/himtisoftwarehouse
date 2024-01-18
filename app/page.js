@@ -1,6 +1,5 @@
 'use client'
 
-
 import Image from 'next/image'
 import { useState, useEffect } from 'react';
 
@@ -8,15 +7,16 @@ import { useState, useEffect } from 'react';
 function polindrome(str) {
   const reversedStr = str.split('').reverse().join('');
   return str === reversedStr;
-
 }
-
-
-
 export default function Home() {
   const [time, setTime] = useState(new Date());
   const [hash, setHash] = useState('');
+  const [isPalindrome, setIsPalindrome] = useState(false);
 
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    setIsPalindrome(polindrome(value));
+  };
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     const formData = new FormData();
@@ -26,23 +26,12 @@ export default function Home() {
       method: 'POST',
       body: formData,
     });
-    const crypto = require('crypto');
-    const express = require('express');
-    const multer = require('multer');
-    const app = express();
-    const upload = multer();
-
-    app.post('/upload', upload.single('file'), (req, res) => {
-      const hash = crypto.createHash('sha256');
-      hash.update(req.file.originalname);
-      res.send(hash.digest('hex'));
-    });
 
     app.listen(3000);
 
-
     const data = await response.text();
     setHash(data);
+    setIsPalindrome(polindrome(data));
   };
 
   useEffect(() => {
@@ -67,6 +56,7 @@ export default function Home() {
 
     return `${hours}:${minutes}:${seconds} ${ampm}`;
   };
+
   const formatString = (date) => {
     let jam = date.getHours();
     let menit = date.getMinutes();
@@ -83,23 +73,18 @@ export default function Home() {
   return (
     <div>
       <h1>Next.js + rust</h1>
-
-
       <h2>{formatTime(time)}</h2>
       <h2>{formatString(time)}</h2>
-
-
-      <form
-        method='post'>
+      <form method='post'>
         <input type='file' name='convert' onChange={handleFileUpload}></input>
-
         <p>{hash}</p>
+
       </form>
-
-
-      <button name='download' >Download encrypted file</button>
-
-
+      <form>
+        <input type='text' name='polindrome' onChange={handleInputChange} />
+        {isPalindrome && <p>The text is a palindrome</p>}
+      </form>
+      <button name='download'>Download encrypted file</button>
     </div>
   );
 }
